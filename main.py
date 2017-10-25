@@ -1,6 +1,8 @@
 # pylint: disable=C0103,C0111,W0614,W0401
 from Tkinter import *
 import tkMessageBox
+import tkFileDialog
+import csv
 
 
 class Application(Frame):
@@ -14,7 +16,7 @@ class Application(Frame):
         return "break"
 
     def createWidgets(self):
-		# TODO: make this a 2D array, so it can be indexed.
+                # TODO: make this a 2D array, so it can be indexed.
         cells = []
         sizeX = 4
         sizeY = 8
@@ -38,11 +40,26 @@ def hello():
     tkMessageBox.showinfo("", "Hello!")
 
 
+def openFile():
+    filename = tkFileDialog.askopenfilename(initialdir=".", title="Select file",
+                                            filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
+    with open(filename, "rb") as csvfile:
+        rd = csv.reader(csvfile, delimiter=",", quotechar="|")
+        for row in rd:
+            print row
+            
+
 root = Tk()
-# create a toplevel menu
+
 menubar = Menu(root)
-menubar.add_command(label="Hello!", command=hello)
-menubar.add_command(label="Quit!", command=root.quit)
+
+filemenu = Menu(menubar, tearoff=0)
+filemenu.add_command(label="New", command=hello)
+filemenu.add_command(label="Open", command=openFile)
+filemenu.add_command(label="Save as", command=hello)
+filemenu.add_command(label="Exit", command=root.quit)
+
+menubar.add_cascade(label="File", menu=filemenu)
 
 
 app = Application()
