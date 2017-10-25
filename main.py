@@ -49,7 +49,7 @@ class Application(Frame):
         # remove default cells
         for i in range(self.sizeY):
             for j in range(self.sizeX):
-                print str(i) + str(j)
+                #print str(i) + str(j)
                 self.cells[i][j].destroy()
         
         # get the max width of the cells
