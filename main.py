@@ -2,6 +2,7 @@
 from Tkinter import *
 import tkMessageBox
 import tkFileDialog
+import tkFont
 import csv
 
 
@@ -68,8 +69,12 @@ class Application(Frame):
                 tmp.bind("<Tab>", self.focus_next_window)
                 tmp.bind("<Control-a>", self.selectall)
                 tmp.insert(END, ary[i][j])
+
+                if( i == 0 ):
+                    tmp.config(font=("Helvetica", 10, tkFont.BOLD))
+                    tmp.config(state=DISABLED, relief=FLAT, bg=app.master.cget('bg'))
+
                 tmp.grid(padx=0, pady=0, column=j, row=i)
-                tmp.grid(padx=0, pady=0)
 
         #TODO: Make headers bold, non-editable?
 
@@ -116,7 +121,13 @@ filemenu.add_command(label="Save as", command=hello)
 filemenu.add_command(label="Exit", command=app.quit)
 
 menubar.add_cascade(label="File", menu=filemenu)
+menubar.add_command(label="Exit", command=app.quit)
 
 app.master.title('CSV Editor')
 app.master.config(menu=menubar)
+
+default_font = tkFont.nametofont("TkTextFont")
+default_font.configure(family="Helvetica")
+
+app.option_add("*Font", default_font)
 app.mainloop()
