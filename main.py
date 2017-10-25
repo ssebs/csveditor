@@ -5,86 +5,140 @@ import tkFileDialog
 import tkFont
 import csv
 
+##
+# CSV GUI Editor written in python using tkinter
+# - A lightweight csv editor
+# - (c) 2017 Sebastian Safari ssebs@ymail.com
+##
+
 
 class Application(Frame):
+
     cellList = []
+    currentCells = []
 
     def __init__(self, master=None):
         Frame.__init__(self, master)
         self.grid()
         self.createDefaultWidgets()
-        
 
     def focus_next_window(self, event):
         event.widget.tk_focusNext().focus()
         return "break"
 
     def selectall(self, event):
-        event.widget.tag_add("sel","1.0","end")
+        event.widget.tag_add("sel", "1.0", "end")
         event.widget.mark_set(INSERT, "1.0")
         event.widget.see(INSERT)
         return "break"
 
-    #TODO: Create bind for arrow keys
+    # TODO: Create bind for arrow keys
 
     def createDefaultWidgets(self):
         w, h = 7, 1
         self.sizeX = 4
         self.sizeY = 6
-        self.cells = []
+        self.defaultCells = []
         for i in range(self.sizeY):
-            self.cells.append([])
+            self.defaultCells.append([])
             for j in range(self.sizeX):
-                self.cells[i].append([])
+                self.defaultCells[i].append([])
 
         for i in range(self.sizeY):
-            self.cells.append([])
             for j in range(self.sizeX):
                 tmp = Text(self, width=w, height=h)
                 tmp.bind("<Tab>", self.focus_next_window)
                 tmp.bind("<Control-a>", self.selectall)
+                tmp.insert(END, "")
                 tmp.grid(padx=0, pady=0, column=j, row=i)
-                self.cells[i][j] = tmp
-                self.cellList.append(tmp)
-        self.cells[0][0].focus_force()
 
-        #TODO: Add buttons to create new rows/columns
+                self.defaultCells[i][j] = tmp
+                self.cellList.append(tmp)
+
+        self.defaultCells[0][0].focus_force()
+        self.currentCells = self.defaultCells
+        
+        
+        # TODO: Add buttons to create new rows/columns
+
+    def newCells(self):
+        self.removeCells()
+        self.createDefaultWidgets()
 
     def removeCells(self):
         while(len(self.cellList) > 0):
             for cell in self.cellList:
-                    #print str(i) + str(j)
-                    cell.destroy()
-                    self.cellList.remove(cell)
+                # print str(i) + str(j)
+                cell.destroy()
+                self.cellList.remove(cell)
+        
 
     def loadCells(self, ary):
-        
+
         self.removeCells()
 
         # get the max width of the cells
         mx = 0
         for i in range(len(ary)):
             for j in range(len(ary[0])):
-              if( len(ary[i][j]) >= mx ):
-                mx = len(ary[i][j])
+                if(len(ary[i][j]) >= mx):
+                    mx = len(ary[i][j])
         w = mx
+
+        sizeX = len(ary)
+        sizeY = len(ary[0])
+        loadCells = []
+        for i in range(sizeY):
+            loadCells.append([])
+            for j in range(sizeX):
+                loadCells[i].append([])
 
         # create the new cells
         for i in range(len(ary)):
             for j in range(len(ary[0])):
-                # print ary[i][j]
                 tmp = Text(self, width=w, height=1)
                 tmp.bind("<Tab>", self.focus_next_window)
                 tmp.bind("<Control-a>", self.selectall)
                 tmp.insert(END, ary[i][j])
 
-                if( i == 0 ):
+                if(i == 0):
                     tmp.config(font=("Helvetica", 10, tkFont.BOLD))
-                    tmp.config(state=DISABLED, relief=FLAT, bg=app.master.cget('bg'))
+                    tmp.config(state=DISABLED, relief=FLAT,
+                               bg=app.master.cget('bg'))
                 
+                loadCells[i][j] = tmp
                 self.cellList.append(tmp)
-                tmp.grid(padx=0, pady=0, column=j, row=i)
 
+                tmp.grid(padx=0, pady=0, column=j, row=i)
+        
+        self.currentCells = loadCells
+
+    def saveCells(self):
+        print "saving Cells"
+
+        filename = tkFileDialog.asksaveasfilename(initialdir = ".",title = "Save File",filetypes = (("csv files","*.csv"),("all files","*.*")))
+        var = ""
+        with open(filename, "wb") as csvfile:
+            wr = csv.writer(csvfile, delimiter=",", quotechar="|", quoting=csv.QUOTE_MINIMAL)
+            for i in range(len(self.currentCells)):
+                for j in range(len(self.currentCells[0])):
+                    var = self.currentCells[i][j].get(1.0,END).strip()
+                    if var is not "\n":
+                        print var
+                        wr.writerow(["var"] + [var])
+
+        tkMessageBox.showinfo("", "Saved!")
+        # First,Last,user
+        # Bob,Johnson,bjohn
+        # Mark,Phillips,mphil
+        #
+
+
+
+# End Application Class #
+
+
+# Begin functions #
 
 def hello():
     tkMessageBox.showinfo("", "Hello!")
@@ -96,6 +150,7 @@ def readFile():
     ary = []
     col = -1
     rows = []
+
     # get array size & get contents of rows
     with open(filename, "rb") as csvfile:
         rd = csv.reader(csvfile, delimiter=",", quotechar="|")
@@ -117,14 +172,17 @@ def readFile():
 
     app.loadCells(ary)
 
+# End functions #
+
+
 ### CODE ENTRY ###
 app = Application()
 menubar = Menu(app)
 
 filemenu = Menu(menubar, tearoff=0)
-filemenu.add_command(label="New", command=app.removeCells)
-filemenu.add_command(label="Open", command=readFile)
-filemenu.add_command(label="Save as", command=hello)
+filemenu.add_command(label="New", command=app.newCells)     # add save dialog
+filemenu.add_command(label="Open", command=readFile)        # add save dialog
+filemenu.add_command(label="Save as", command=app.saveCells)
 filemenu.add_command(label="Exit", command=app.quit)
 
 menubar.add_cascade(label="File", menu=filemenu)
