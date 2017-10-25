@@ -47,7 +47,7 @@ def openFile():
         rd = csv.reader(csvfile, delimiter=",", quotechar="|")
         for row in rd:
             print row
-            
+
 
 root = Tk()
 
