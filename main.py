@@ -14,6 +14,7 @@ class Application(Frame):
         return "break"
 
     def createWidgets(self):
+		# TODO: make this a 2D array, so it can be indexed.
         cells = []
         sizeX = 4
         sizeY = 8
