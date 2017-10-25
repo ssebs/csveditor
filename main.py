@@ -18,8 +18,8 @@ class Application(Frame):
         cells = []
         sizeX = 4
         sizeY = 8
-        px = 1
-        py = 2
+        px = 0
+        py = 0
         w = 7
         h = 1
 
