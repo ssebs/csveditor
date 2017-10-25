@@ -7,10 +7,13 @@ import csv
 
 
 class Application(Frame):
+    cellList = []
+
     def __init__(self, master=None):
         Frame.__init__(self, master)
         self.grid()
         self.createDefaultWidgets()
+        
 
     def focus_next_window(self, event):
         event.widget.tk_focusNext().focus()
@@ -42,17 +45,22 @@ class Application(Frame):
                 tmp.bind("<Control-a>", self.selectall)
                 tmp.grid(padx=0, pady=0, column=j, row=i)
                 self.cells[i][j] = tmp
+                self.cellList.append(tmp)
         self.cells[0][0].focus_force()
 
         #TODO: Add buttons to create new rows/columns
 
+    def removeCells(self):
+        while(len(self.cellList) > 0):
+            for cell in self.cellList:
+                    #print str(i) + str(j)
+                    cell.destroy()
+                    self.cellList.remove(cell)
+
     def loadCells(self, ary):
-        # remove default cells
-        for i in range(self.sizeY):
-            for j in range(self.sizeX):
-                #print str(i) + str(j)
-                self.cells[i][j].destroy()
         
+        self.removeCells()
+
         # get the max width of the cells
         mx = 0
         for i in range(len(ary)):
@@ -73,10 +81,9 @@ class Application(Frame):
                 if( i == 0 ):
                     tmp.config(font=("Helvetica", 10, tkFont.BOLD))
                     tmp.config(state=DISABLED, relief=FLAT, bg=app.master.cget('bg'))
-
+                
+                self.cellList.append(tmp)
                 tmp.grid(padx=0, pady=0, column=j, row=i)
-
-        #TODO: Make headers bold, non-editable?
 
 
 def hello():
@@ -110,12 +117,12 @@ def readFile():
 
     app.loadCells(ary)
 
-
+### CODE ENTRY ###
 app = Application()
 menubar = Menu(app)
 
 filemenu = Menu(menubar, tearoff=0)
-filemenu.add_command(label="New", command=hello)
+filemenu.add_command(label="New", command=app.removeCells)
 filemenu.add_command(label="Open", command=readFile)
 filemenu.add_command(label="Save as", command=hello)
 filemenu.add_command(label="Exit", command=app.quit)
