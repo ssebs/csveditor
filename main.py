@@ -32,7 +32,7 @@ class Application(Frame):
         event.widget.see(INSERT)
         return "break"
 
-    # TODO: Create bind for arrow keys
+    # TODO: Create bind for arrow keys and enter
 
     def createDefaultWidgets(self):
         w, h = 7, 1
@@ -70,10 +70,33 @@ class Application(Frame):
             for cell in self.cellList:
                 # print str(i) + str(j)
                 cell.destroy()
-                self.cellList.remove(cell)
-        
+                self.cellList.remove(cell)    
 
-    def loadCells(self, ary):
+    def loadCells(self):
+        filename = tkFileDialog.askopenfilename(initialdir=".", title="Select file",
+                                            filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
+        ary = []
+        col = -1
+        rows = []
+
+        # get array size & get contents of rows
+        with open(filename, "rb") as csvfile:
+            rd = csv.reader(csvfile, delimiter=",", quotechar='"')
+            for row in rd:
+                ary.append([])
+                col = len(row)
+                rows.append(row)
+
+        # create the array
+        for i in range(len(ary)):
+            for j in range(col):
+                ary[i].append([])
+
+        # fill the array
+        for i in range(len(ary)):
+            for j in range(col):
+                # print rows[i][j]
+                ary[i][j] = rows[i][j]
 
         self.removeCells()
 
@@ -101,8 +124,7 @@ class Application(Frame):
 
                 if(i == 0):
                     tmp.config(font=("Helvetica", 10, tkFont.BOLD))
-                    tmp.config(state=DISABLED, relief=FLAT,
-                               bg=app.master.cget('bg'))
+                    tmp.config(relief=FLAT, bg=app.master.cget('bg'))
                 
                 loadCells[i][j] = tmp
                 self.cellList.append(tmp)
@@ -112,43 +134,26 @@ class Application(Frame):
         self.currentCells = loadCells
 
     def saveCells(self):
-        print "saving Cells"
+        filename = tkFileDialog.asksaveasfilename(initialdir = ".",title = "Save File",filetypes = (("csv files","*.csv"),("all files","*.*")), defaultextension=".csv")
 
-        #filename = tkFileDialog.asksaveasfilename(initialdir = ".",title = "Save File",filetypes = (("csv files","*.csv"),("all files","*.*")))
-        
         vals = []
-        for i in range(len(self.currentCells)):         # x axis
-            for j in range(len(self.currentCells[0])):  # y axis
-                vals.append(self.currentCells[i][j].get(1.0,END).strip())
+        for i in range(len(self.currentCells)):
+            for j in range(len(self.currentCells[0])):
+                vals.append(self.currentCells[i][j].get(1.0, END).strip())
 
-        print "i: " + str(len(self.currentCells))
-        print "j: " + str(len(self.currentCells[0]))
-        
-        rw = []
-        for i in range(len(vals)):
-            print vals[i]
-            if( i % len(self.currentCells[0]) == 0 ):
-                rw.append(vals[i])
+        with open(filename, "wb") as csvfile:
+            for rw in range(len(self.currentCells)):
+                row = ""
+                for i in range(len(self.currentCells[0])):
+                    x = rw * len(self.currentCells[0])
+                    if( i != len(self.currentCells[0]) - 1 ):
+                        row += vals[x + i] + ","
+                    else:
+                        row += vals[x + i]
 
-        # get this to  make a row
+                csvfile.write(row + "\n")
 
-        print "rw"
-        for val in rw:
-            print val
-
-        # with open(filename, "wb") as csvfile:
-        #     wr = csv.writer(csvfile, delimiter=",", quotechar="|", quoting=csv.QUOTE_MINIMAL)
-        # #wr.writerow([var])
-        
-        # tkMessageBox.showinfo("", "Saved!")
-        
-        
-        # First,Last,user
-        # Bob,Johnson,bjohn
-        # Mark,Phillips,mphil
-        #
-
-
+        tkMessageBox.showinfo("", "Saved!")
 
 # End Application Class #
 
@@ -157,35 +162,6 @@ class Application(Frame):
 
 def hello():
     tkMessageBox.showinfo("", "Hello!")
-
-
-def readFile():
-    filename = tkFileDialog.askopenfilename(initialdir=".", title="Select file",
-                                            filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
-    ary = []
-    col = -1
-    rows = []
-
-    # get array size & get contents of rows
-    with open(filename, "rb") as csvfile:
-        rd = csv.reader(csvfile, delimiter=",", quotechar="|")
-        for row in rd:
-            ary.append([])
-            col = len(row)
-            rows.append(row)
-
-    # create the array
-    for i in range(len(ary)):
-        for j in range(col):
-            ary[i].append([])
-
-    # fill the array
-    for i in range(len(ary)):
-        for j in range(col):
-            # print rows[i][j]
-            ary[i][j] = rows[i][j]
-
-    app.loadCells(ary)
 
 # End functions #
 
@@ -196,7 +172,7 @@ menubar = Menu(app)
 
 filemenu = Menu(menubar, tearoff=0)
 filemenu.add_command(label="New", command=app.newCells)     # add save dialog
-filemenu.add_command(label="Open", command=readFile)        # add save dialog
+filemenu.add_command(label="Open", command=app.loadCells)        # add save dialog
 filemenu.add_command(label="Save as", command=app.saveCells)
 filemenu.add_command(label="Exit", command=app.quit)
 
