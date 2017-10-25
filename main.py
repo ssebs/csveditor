@@ -85,12 +85,10 @@ class Application(Frame):
                     mx = len(ary[i][j])
         w = mx
 
-        sizeX = len(ary)
-        sizeY = len(ary[0])
         loadCells = []
-        for i in range(sizeY):
+        for i in range(len(ary)):
             loadCells.append([])
-            for j in range(sizeX):
+            for j in range(len(ary[0])):
                 loadCells[i].append([])
 
         # create the new cells
@@ -116,18 +114,35 @@ class Application(Frame):
     def saveCells(self):
         print "saving Cells"
 
-        filename = tkFileDialog.asksaveasfilename(initialdir = ".",title = "Save File",filetypes = (("csv files","*.csv"),("all files","*.*")))
-        var = ""
-        with open(filename, "wb") as csvfile:
-            wr = csv.writer(csvfile, delimiter=",", quotechar="|", quoting=csv.QUOTE_MINIMAL)
-            for i in range(len(self.currentCells)):
-                for j in range(len(self.currentCells[0])):
-                    var = self.currentCells[i][j].get(1.0,END).strip()
-                    if var is not "\n":
-                        print var
-                        wr.writerow(["var"] + [var])
+        #filename = tkFileDialog.asksaveasfilename(initialdir = ".",title = "Save File",filetypes = (("csv files","*.csv"),("all files","*.*")))
+        
+        vals = []
+        for i in range(len(self.currentCells)):         # x axis
+            for j in range(len(self.currentCells[0])):  # y axis
+                vals.append(self.currentCells[i][j].get(1.0,END).strip())
 
-        tkMessageBox.showinfo("", "Saved!")
+        print "i: " + str(len(self.currentCells))
+        print "j: " + str(len(self.currentCells[0]))
+        
+        rw = []
+        for i in range(len(vals)):
+            print vals[i]
+            if( i % len(self.currentCells[0]) == 0 ):
+                rw.append(vals[i])
+
+        # get this to  make a row
+
+        print "rw"
+        for val in rw:
+            print val
+
+        # with open(filename, "wb") as csvfile:
+        #     wr = csv.writer(csvfile, delimiter=",", quotechar="|", quoting=csv.QUOTE_MINIMAL)
+        # #wr.writerow([var])
+        
+        # tkMessageBox.showinfo("", "Saved!")
+        
+        
         # First,Last,user
         # Bob,Johnson,bjohn
         # Mark,Phillips,mphil
