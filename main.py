@@ -16,24 +16,23 @@ class Application(Frame):
         return "break"
 
     def createWidgets(self):
-                # TODO: make this a 2D array, so it can be indexed.
-        cells = []
+        w, h = 7, 1
         sizeX = 4
-        sizeY = 8
-        px = 0
-        py = 0
-        w = 7
-        h = 1
+        sizeY = 6
+        cells = []
+        for i in range(sizeY):
+            cells.append([])
+            for j in range(sizeX):
+                cells[i].append([])
+        
 
         for i in range(sizeY):
-            tmp = Text(self, width=w, height=h)
-            tmp.bind("<Tab>", self.focus_next_window)
-            cells.append(tmp.grid(padx=px, pady=py))
-
+            cells.append([])
             for j in range(sizeX):
                 tmp = Text(self, width=w, height=h)
                 tmp.bind("<Tab>", self.focus_next_window)
-                cells.append(tmp.grid(padx=px, pady=py, row=i, column=j))
+                tmp.grid(padx=0, pady=0, column=j, row=i)
+                cells[i][j] = tmp
 
 
 def hello():
