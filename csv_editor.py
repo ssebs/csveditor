@@ -27,6 +27,10 @@ class Application(Frame):
         event.widget.tk_focusNext().focus()
         return "break"
 
+    def focus_sh_tab(self, event):
+        event.widget.tk_focusPrev().focus()
+        return "break"
+
     def focus_right(self, event):
         #event.widget.tk_focusNext().focus()
         widget = event.widget.focus_get()
@@ -75,12 +79,14 @@ class Application(Frame):
                     self.currentCells[i+1][j].focus()
         return "break"
 
-
     def selectall(self, event):
         event.widget.tag_add("sel", "1.0", "end")
         event.widget.mark_set(INSERT, "1.0")
         event.widget.see(INSERT)
         return "break"
+
+    def saveFile(self, event):
+        self.saveCells()
 
     # TODO: Create bind for arrow keys and enter
 
@@ -98,13 +104,15 @@ class Application(Frame):
             for j in range(self.sizeX):
                 tmp = Text(self, width=w, height=h)
                 tmp.bind("<Tab>", self.focus_tab)
+                tmp.bind("<Shift-Tab>", self.focus_sh_tab)
                 tmp.bind("<Return>", self.focus_down)
                 tmp.bind("<Shift-Return>", self.focus_up)
-                tmp.bind("<Control-a>", self.selectall)
                 tmp.bind("<Right>", self.focus_right)
                 tmp.bind("<Left>", self.focus_left)
                 tmp.bind("<Up>", self.focus_up)
                 tmp.bind("<Down>", self.focus_down)
+                tmp.bind("<Control-a>", self.selectall)
+                tmp.bind("<Control-s>", self.saveFile)
                 #TODO: Add resize check on column when changing focus
                 tmp.insert(END, "")
                 tmp.grid(padx=0, pady=0, column=j, row=i)
@@ -176,13 +184,15 @@ class Application(Frame):
             for j in range(len(ary[0])):
                 tmp = Text(self, width=w, height=1)
                 tmp.bind("<Tab>", self.focus_tab)
+                tmp.bind("<Shift-Tab>", self.focus_sh_tab)
                 tmp.bind("<Return>", self.focus_down)
                 tmp.bind("<Shift-Return>", self.focus_up)
-                tmp.bind("<Control-a>", self.selectall)
                 tmp.bind("<Right>", self.focus_right)
                 tmp.bind("<Left>", self.focus_left)
                 tmp.bind("<Up>", self.focus_up)
                 tmp.bind("<Down>", self.focus_down)
+                tmp.bind("<Control-a>", self.selectall)
+                tmp.bind("<Control-s>", self.saveFile)
                 tmp.insert(END, ary[i][j])
 
                 if(i == 0):
