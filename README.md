@@ -1,13 +1,14 @@
 # csveditor
 A lightweight GUI csv editor.
 
-### I plan to make this: 
+### This Will: 
 * open & save csv files, 
-* scale for larger files
-* let you edit the files, and save the changes
-* be easy to use
+* let you view and edit csv files
+* have bold headers
+
+### I plan on adding:
 * color/font settings file?
-* bold headers
+* better keyboard support (arrow keys, enter to go down a line)
 
 I wanted to make this because I found I was making tables in Excel often, and needed something more lightweight.
 
