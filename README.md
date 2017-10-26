@@ -1,6 +1,8 @@
 # csveditor
 A lightweight GUI csv editor.
 
+![CSV Editor](https://github.com/ssebs/csveditor/raw/master/CSV_Editor.png "CSV Editor")
+
 ### This Will: 
 * open & save csv files, 
 * let you view and edit csv files
