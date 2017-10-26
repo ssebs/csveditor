@@ -16,15 +16,65 @@ class Application(Frame):
 
     cellList = []
     currentCells = []
+    currentCell = None
 
     def __init__(self, master=None):
         Frame.__init__(self, master)
         self.grid()
         self.createDefaultWidgets()
 
-    def focus_next_window(self, event):
+    def focus_tab(self, event):
         event.widget.tk_focusNext().focus()
         return "break"
+
+    def focus_right(self, event):
+        #event.widget.tk_focusNext().focus()
+        widget = event.widget.focus_get()
+
+        for i in range(len(self.currentCells)):
+            for j in range(len(self.currentCells[0])):
+                if widget == self.currentCells[i][j]:
+                    if(j >= len(self.currentCells[0]) - 1 ):
+                        j = -1    
+                    self.currentCells[i][j+1].focus()
+        return "break"
+
+    def focus_left(self, event):
+        #event.widget.tk_focusNext().focus()
+        widget = event.widget.focus_get()
+
+        for i in range(len(self.currentCells)):
+            for j in range(len(self.currentCells[0])):
+                if widget == self.currentCells[i][j]:
+                    if(j == 0):
+                        j = len(self.currentCells[0])    
+                    self.currentCells[i][j-1].focus()
+        return "break"
+
+    def focus_up(self, event):
+        #event.widget.tk_focusNext().focus()
+        widget = event.widget.focus_get()
+
+        for i in range(len(self.currentCells)):
+            for j in range(len(self.currentCells[0])):
+                if widget == self.currentCells[i][j]:
+                    if(i < 0):
+                        i = len(self.currentCells)
+                    self.currentCells[i-1][j].focus()
+        return "break"
+
+    def focus_down(self, event):
+        #event.widget.tk_focusNext().focus()
+        widget = event.widget.focus_get()
+
+        for i in range(len(self.currentCells)):
+            for j in range(len(self.currentCells[0])):
+                if widget == self.currentCells[i][j]:
+                    if( i >= len(self.currentCells) - 1):
+                        i = -1
+                    self.currentCells[i+1][j].focus()
+        return "break"
+
 
     def selectall(self, event):
         event.widget.tag_add("sel", "1.0", "end")
@@ -47,8 +97,12 @@ class Application(Frame):
         for i in range(self.sizeY):
             for j in range(self.sizeX):
                 tmp = Text(self, width=w, height=h)
-                tmp.bind("<Tab>", self.focus_next_window)
+                tmp.bind("<Tab>", self.focus_tab)
                 tmp.bind("<Control-a>", self.selectall)
+                tmp.bind("<Right>", self.focus_right)
+                tmp.bind("<Left>", self.focus_left)
+                tmp.bind("<Up>", self.focus_up)
+                tmp.bind("<Down>", self.focus_down)
                 tmp.insert(END, "")
                 tmp.grid(padx=0, pady=0, column=j, row=i)
 
@@ -57,6 +111,7 @@ class Application(Frame):
 
         self.defaultCells[0][0].focus_force()
         self.currentCells = self.defaultCells
+        self.currentCell = self.currentCells[0][0]
 
         # TODO: Add buttons to create new rows/columns
 
@@ -117,8 +172,12 @@ class Application(Frame):
         for i in range(len(ary)):
             for j in range(len(ary[0])):
                 tmp = Text(self, width=w, height=1)
-                tmp.bind("<Tab>", self.focus_next_window)
+                tmp.bind("<Tab>", self.focus_tab)
                 tmp.bind("<Control-a>", self.selectall)
+                tmp.bind("<Right>", self.focus_right)
+                tmp.bind("<Left>", self.focus_left)
+                tmp.bind("<Up>", self.focus_up)
+                tmp.bind("<Down>", self.focus_down)
                 tmp.insert(END, ary[i][j])
 
                 if(i == 0):
@@ -126,11 +185,14 @@ class Application(Frame):
                     tmp.config(relief=FLAT, bg=app.master.cget('bg'))
 
                 loadCells[i][j] = tmp
+                tmp.focus_force()
                 self.cellList.append(tmp)
 
                 tmp.grid(padx=0, pady=0, column=j, row=i)
 
         self.currentCells = loadCells
+        self.currentCell = self.currentCells[0][0]
+
 
     def saveCells(self):
         filename = tkFileDialog.asksaveasfilename(initialdir=".", title="Save File", filetypes=(
