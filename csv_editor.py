@@ -98,11 +98,14 @@ class Application(Frame):
             for j in range(self.sizeX):
                 tmp = Text(self, width=w, height=h)
                 tmp.bind("<Tab>", self.focus_tab)
+                tmp.bind("<Return>", self.focus_down)
+                tmp.bind("<Shift-Return>", self.focus_up)
                 tmp.bind("<Control-a>", self.selectall)
                 tmp.bind("<Right>", self.focus_right)
                 tmp.bind("<Left>", self.focus_left)
                 tmp.bind("<Up>", self.focus_up)
                 tmp.bind("<Down>", self.focus_down)
+                #TODO: Add resize check on column when changing focus
                 tmp.insert(END, "")
                 tmp.grid(padx=0, pady=0, column=j, row=i)
 
@@ -173,6 +176,8 @@ class Application(Frame):
             for j in range(len(ary[0])):
                 tmp = Text(self, width=w, height=1)
                 tmp.bind("<Tab>", self.focus_tab)
+                tmp.bind("<Return>", self.focus_down)
+                tmp.bind("<Shift-Return>", self.focus_up)
                 tmp.bind("<Control-a>", self.selectall)
                 tmp.bind("<Right>", self.focus_right)
                 tmp.bind("<Left>", self.focus_left)
