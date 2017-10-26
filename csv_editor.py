@@ -1,4 +1,4 @@
-# pylint: disable=C0103,C0111,W0614,W0401,C0200
+# pylint: disable=C0103,C0111,W0614,W0401,C0200,C0325
 from Tkinter import *
 import tkMessageBox
 import tkFileDialog
@@ -57,8 +57,7 @@ class Application(Frame):
 
         self.defaultCells[0][0].focus_force()
         self.currentCells = self.defaultCells
-        
-        
+
         # TODO: Add buttons to create new rows/columns
 
     def newCells(self):
@@ -70,11 +69,11 @@ class Application(Frame):
             for cell in self.cellList:
                 # print str(i) + str(j)
                 cell.destroy()
-                self.cellList.remove(cell)    
+                self.cellList.remove(cell)
 
     def loadCells(self):
         filename = tkFileDialog.askopenfilename(initialdir=".", title="Select file",
-                                            filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
+                                                filetypes=(("csv files", "*.csv"), ("all files", "*.*")))
         ary = []
         col = -1
         rows = []
@@ -125,16 +124,17 @@ class Application(Frame):
                 if(i == 0):
                     tmp.config(font=("Helvetica", 10, tkFont.BOLD))
                     tmp.config(relief=FLAT, bg=app.master.cget('bg'))
-                
+
                 loadCells[i][j] = tmp
                 self.cellList.append(tmp)
 
                 tmp.grid(padx=0, pady=0, column=j, row=i)
-        
+
         self.currentCells = loadCells
 
     def saveCells(self):
-        filename = tkFileDialog.asksaveasfilename(initialdir = ".",title = "Save File",filetypes = (("csv files","*.csv"),("all files","*.*")), defaultextension=".csv")
+        filename = tkFileDialog.asksaveasfilename(initialdir=".", title="Save File", filetypes=(
+            ("csv files", "*.csv"), ("all files", "*.*")), defaultextension=".csv")
 
         vals = []
         for i in range(len(self.currentCells)):
@@ -146,7 +146,7 @@ class Application(Frame):
                 row = ""
                 for i in range(len(self.currentCells[0])):
                     x = rw * len(self.currentCells[0])
-                    if( i != len(self.currentCells[0]) - 1 ):
+                    if(i != len(self.currentCells[0]) - 1):
                         row += vals[x + i] + ","
                     else:
                         row += vals[x + i]
@@ -172,7 +172,8 @@ menubar = Menu(app)
 
 filemenu = Menu(menubar, tearoff=0)
 filemenu.add_command(label="New", command=app.newCells)     # add save dialog
-filemenu.add_command(label="Open", command=app.loadCells)        # add save dialog
+# add save dialog
+filemenu.add_command(label="Open", command=app.loadCells)
 filemenu.add_command(label="Save as", command=app.saveCells)
 filemenu.add_command(label="Exit", command=app.quit)
 
