@@ -11,7 +11,9 @@ import csv
 # - (c) 2017 Sebastian Safari ssebs@ymail.com
 ##
 
-
+##
+#   TODO: Add + / - buttons to create/remove rows & coloumns
+##
 class Application(Frame):
 
     cellList = []
