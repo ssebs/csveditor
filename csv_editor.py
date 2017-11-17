@@ -13,6 +13,7 @@ import csv
 
 ##
 #   TODO: Add + / - buttons to create/remove rows & coloumns
+#   TODO: Add resizing of cells
 ##
 class Application(Frame):
 
