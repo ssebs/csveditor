@@ -3,6 +3,10 @@ A lightweight GUI csv editor.
 
 ![CSV Editor](https://github.com/ssebs/csveditor/raw/master/CSV_Editor.PNG "CSV Editor")
 
+## Usage
+- You must have [tk](https://tkdocs.com/tutorial/install.html) installed, it's a different install method per OS
+- `python csv_editor.py`
+
 ### This Will: 
 * open & save csv files, 
 * let you view and edit csv files
